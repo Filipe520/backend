@@ -1,0 +1,43 @@
+# Dependências
+node_modules/
+
+# Build / produção
+dist/
+build/
+out/
+.next/
+.expo/
+.expo-shared/
+.expo/web-build/
+
+# Configs de ambiente (NÃO subir para o GitHub)
+.env
+.env.local
+.env.development
+.env.production
+.env.test
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+*.log
+
+# Sistema
+.DS_Store
+Thumbs.db
+
+# Cache
+.cache/
+.next/cache/
+.vscode/
+.idea/
+*.swp
+
+# TypeScript
+*.tsbuildinfo
+
+# Expo Android / iOS
+android/
+ios/
