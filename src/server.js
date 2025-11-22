@@ -14,5 +14,7 @@ app.use(express.json());
 
 app.use("/api/auth", authRoutes);
 
-// Exporta para Vercel
+// Ser fosse roda no localhost
+// app.listen(5000, () => console.log("Servidor rodando na porta 5000"));
+// Ser for roda no Vercel, Exporta para Vercel
 export default app;
