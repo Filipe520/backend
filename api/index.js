@@ -18,7 +18,7 @@ const User = mongoose.model("User", UserSchema);
 // Garante que a conexão só seja estabelecida uma vez
 let isConnected = false;
 const connectDB = async () => {
-  if (isConnected) return console.log("MongoDB já conectado");
+  if (isConnected) return;
   try {
     await mongoose.connect(process.env.MONGO_URI);
     isConnected = true;
@@ -28,11 +28,9 @@ const connectDB = async () => {
   }
 };
 
-connectDB(); // Chama a conexão ao iniciar a função Serverless
+connectDB();
 
 const register = async (req, res) => {
-  console.log(req);
-
   try {
     const { userName, fullName, email, password } = req.body;
 
@@ -44,11 +42,8 @@ const register = async (req, res) => {
 
     const user = await User.create({
       userName,
-
       fullName,
-
       email,
-
       password: hashed,
     });
 
@@ -86,39 +81,21 @@ router.post("/login", login);
 
 const app = express();
 
-const allowedOrigins = ["http://localhost:3000"];
 const corsOptions = {
-  origin: (origin, callback) => {
-    // Permitir acesso se a origem for permitida ou se for uma requisição sem origem (como Postman)
-
-    if (!origin || allowedOrigins.includes(origin)) {
-      callback(null, true);
-    } else {
-      callback(new Error("Not allowed by CORS"));
-    }
-  },
-
-  methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
-
-  credentials: true, // Se você usa cookies/sessions
-
-  allowedHeaders: [
-    "Origin",
-
-    "X-Requested-With",
-
-    "Content-Type",
-
-    "Accept",
-
-    "Authorization",
-  ],
+  origin: "*",
+  methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
+  allowedHeaders: ["Content-Type", "Authorization"],
 };
 
 app.use(cors(corsOptions));
 app.use(express.json());
 
-// Rota de autenticação
+// Rota serverless final
 app.use("/api/auth", router);
 
-export default app;
+// NECESSÁRIO para Vercel funcionar
+export const config = {
+  api: { bodyParser: false },
+};
+
+export default (req, res) => app(req, res);
