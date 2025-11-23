@@ -3,6 +3,7 @@ import mongoose from "mongoose";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import Cors from "cors";
+import { User } from "../src/models/User";
 
 dotenv.config();
 
@@ -28,15 +29,6 @@ const connectDB = async () => {
   await mongoose.connect(process.env.MONGO_URI);
   isConnected = true;
 };
-
-// Schema
-const UserSchema = new mongoose.Schema({
-  userName: String,
-  fullName: String,
-  email: { type: String, unique: true },
-  password: String,
-});
-const User = mongoose.models.User || mongoose.model("User", UserSchema);
 
 // FUNÇÃO PRINCIPAL
 export default async function handler(req, res) {
