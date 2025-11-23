@@ -1,9 +1,7 @@
-import { connectDB } from "../lib/mongodb.js";
-import { User } from "../models/User.js";
+import dotenv from "dotenv";
+import mongoose from "mongoose";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-
-import dotenv from "dotenv";
 import Cors from "cors";
 
 dotenv.config();
@@ -22,6 +20,23 @@ function runMiddleware(req, res, fn) {
     });
   });
 }
+
+// Conexão Mongo (reutilizável)
+let isConnected = false;
+const connectDB = async () => {
+  if (isConnected) return;
+  await mongoose.connect(process.env.MONGO_URI);
+  isConnected = true;
+};
+
+// Schema
+const UserSchema = new mongoose.Schema({
+  userName: String,
+  fullName: String,
+  email: { type: String, unique: true },
+  password: String,
+});
+const User = mongoose.models.User || mongoose.model("User", UserSchema);
 
 // FUNÇÃO PRINCIPAL
 export default async function handler(req, res) {
