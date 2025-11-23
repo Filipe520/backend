@@ -8,4 +8,5 @@ const UserSchema = new mongoose.Schema({
   password: String,
 });
 // Exportando função, para ser reutilizada em outro lugar no código
-export const User = mongoose.models.User || mongoose.model("User", UserSchema);
+export const userSchema =
+  mongoose.models.User || mongoose.model("User", UserSchema);

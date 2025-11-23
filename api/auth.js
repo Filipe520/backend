@@ -3,7 +3,7 @@ import mongoose from "mongoose";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import Cors from "cors";
-import { User } from "../models/User";
+import { userSchema } from "../models/userSchema";
 
 dotenv.config();
 
@@ -38,12 +38,12 @@ export default async function handler(req, res) {
   if (req.method === "POST" && req.query.action === "register") {
     const { userName, fullName, email, password } = req.body;
 
-    const exists = await User.findOne({ email });
+    const exists = await userSchema.findOne({ email });
     if (exists) return res.status(400).json({ msg: "Email já cadastrado" });
 
     const hash = await bcrypt.hash(password, 10);
 
-    const user = await User.create({
+    const user = await userSchema.create({
       userName,
       fullName,
       email,
@@ -56,7 +56,7 @@ export default async function handler(req, res) {
   if (req.method === "POST" && req.query.action === "login") {
     const { email, password } = req.body;
 
-    const user = await User.findOne({ email });
+    const user = await userSchema.findOne({ email });
     if (!user) return res.status(400).json({ msg: "Usuário não encontrado" });
 
     const match = await bcrypt.compare(password, user.password);
