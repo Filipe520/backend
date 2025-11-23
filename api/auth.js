@@ -38,7 +38,7 @@ const UserSchema = new mongoose.Schema({
 });
 const User = mongoose.models.User || mongoose.model("User", UserSchema);
 
-// FUNÇÃO PRINCIPAL (REQUIRED PARA VERCEL)
+// FUNÇÃO PRINCIPAL
 export default async function handler(req, res) {
   await runMiddleware(req, res, cors);
   await connectDB();
@@ -74,7 +74,7 @@ export default async function handler(req, res) {
       expiresIn: "7d",
     });
 
-    return res.json({ msg: "Logado", token, user });
+    return res.json({ msg: true, token, user });
   }
 
   return res.status(404).json({ msg: "Rota não encontrada" });
