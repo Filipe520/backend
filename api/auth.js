@@ -74,7 +74,7 @@ export default async function handler(req, res) {
       expiresIn: "7d",
     });
 
-    return res.json({ msg: true, token, user });
+    return res.json({ msg: "Login efetuado com sucesso", token, user });
   }
 
   return res.status(404).json({ msg: "Rota não encontrada" });
