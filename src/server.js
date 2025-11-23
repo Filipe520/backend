@@ -1,5 +1,6 @@
 import express from "express";
 import dotenv from "dotenv";
+import cors from "cors";
 import { connectDB } from "./config/db.js";
 import authRoutes from "./routes/authRoutes.js";
 
@@ -8,33 +9,36 @@ connectDB();
 
 const app = express();
 
-app.use((req, res, next) => {
-  res.header("Access-Control-Allow-Origin", "*");
-  res.header(
-    "Access-Control-Allow-Methods",
-    "GET, POST, PUT, DELETE, PATCH, OPTIONS"
-  );
-  res.header(
-    "Access-Control-Allow-Headers",
-    "Origin, X-Requested-With, Content-Type, Accept, Authorization"
-  );
+const allowedOrigins = ["http://localhost:3000"];
 
-  if (req.method === "OPTIONS") {
-    return res.status(200).json({});
-  }
+// Configure as opções do CORS
+const corsOptions = {
+  origin: (origin, callback) => {
+    // Permitir acesso se a origem for permitida ou se for uma requisição sem origem (como Postman)
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error("Not allowed by CORS"));
+    }
+  },
+  methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
+  credentials: true, // Se você usa cookies/sessions
+  allowedHeaders: [
+    "Origin",
+    "X-Requested-With",
+    "Content-Type",
+    "Accept",
+    "Authorization",
+  ],
+};
 
-  next();
-});
+// <--- USE O MIDDLEWARE CORS AQUI, NO INÍCIO --->
+app.use(cors(corsOptions));
 
+// Garante que o express use o parser JSON
 app.use(express.json());
 
+// Rota de teste e autenticação
 app.use("/api/auth", authRoutes);
 
-app.get("/api/test", (req, res) => {
-  res.json({ ok: true, cors: "active" });
-});
-
-// Ser fosse roda no localhost
-// app.listen(5000, () => console.log("Servidor rodando na porta 5000"));
-// Ser for roda no Vercel, Exporta para Vercel
 export default app;
